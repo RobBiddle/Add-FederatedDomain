@@ -85,7 +85,7 @@ function Global:Add-FederatedDomain {
             }
         }
 
-        Set-MsolDomain -Name (Get-MsolDomain -TenantId 'c3b56d37-c571-4c8e-a752-53df63117731' | Where-Object Name -like "*microsoft.com").Name -TenantId $TenantId -IsDefault
+        Set-MsolDomain -Name (Get-MsolDomain -TenantId $TenantId | Where-Object Name -like "*microsoft.com").Name -TenantId $TenantId -IsDefault
         # ADFS Federation Settings
         Set-MsolDomainAuthentication `
             -ActiveLogOnUri "https://$FederationServerFQDN/adfs/services/trust/2005/usernamemixed"  `
@@ -111,4 +111,3 @@ function Global:Add-FederatedDomain {
         Get-MsolDomain -TenantId $TenantId -DomainName $DomainToFederate
     }
 }
-
