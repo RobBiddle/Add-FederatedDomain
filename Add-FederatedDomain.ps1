@@ -6,8 +6,7 @@
    Add an additional Federated Domain to ADFS
 .DESCRIPTION
     This should be run on the ADFS server in an Administrative PowerShell environment
-    Connect to Office365 using Partner credentials so that TenantId parameter can be utilized in MSOnline cmdlets
-   
+    Connect to Office365 using Partner credentials so that TenantId parameter can be utilized in MSOnline cmdlets   
 .EXAMPLE
    Add-FederatedDomain -TenantId 2e6ec23f-4e6a-403e-adfe-af5e8de381cb -DomainToFederate example.org -FederationServerFQDN fs.fakedomain.org
 #>
