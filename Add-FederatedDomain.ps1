@@ -99,8 +99,7 @@ function Global:Add-FederatedDomain {
 
         # Confirm Domain if necessary
         If(Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId){
-            $TXTrecord = (Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId).label -replace "\..*",""
-            $TXTrecordToSet = 'MS=' + $TXTrecord
+            $TXTrecordToSet = (Get-MsolDomainVerificationDns -DomainName $DomainToFederate-TenantId $TenantId -Mode DnsTxtRecord).Text
             Write-Output -Message "$DomainToFederate TXT Record of $TXTrecordToSet has not been verified, attempting verification now..."
             Confirm-MsolDomain -TenantId $TenantId -DomainName $DomainToFederate -ErrorAction Continue
         }
