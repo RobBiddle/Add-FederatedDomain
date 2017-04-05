@@ -75,8 +75,7 @@ function Global:Add-FederatedDomain {
     {
         if(!(Get-MsolDomain -TenantId $TenantId -DomainName $DomainToFederate)){
             New-Msoldomain -Name $DomainToFederate -TenantId $TenantId
-            $TXTrecord = (Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId).label -replace "\..*",""
-            $TXTrecordToSet = 'MS=' + $TXTrecord
+            $TXTrecordToSet = (Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId -Mode DnsTxtRecord).Text
             $VerificationRecord = (Resolve-DnsName -Name $DomainToFederate -Type TXT).Strings
             if($VerificationRecord -notlike $TXTrecordToSet) {
                 Write-Error -Message "TXT Record containing $TXTrecordToSet must be added to $DomainToFederate Public DNS Zone"
