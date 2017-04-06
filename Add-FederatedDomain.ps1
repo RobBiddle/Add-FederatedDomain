@@ -83,6 +83,17 @@ function Global:Add-FederatedDomain {
             }
         }
 
+        # Confirm Domain if necessary
+        If(Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId){
+            $TXTrecordToSet = (Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId -Mode DnsTxtRecord).Text
+            Write-Output -Message "$DomainToFederate TXT Record of $TXTrecordToSet has not been verified, attempting verification now..."
+            Confirm-MsolDomain -TenantId $TenantId -DomainName $DomainToFederate -ErrorAction SilentlyContinue
+            if ((Get-MsolDomain -DomainName $DomainToFederate -TenantId $TenantId).Status -notlike 'Verified' -and (Get-MsolDomain -DomainName $DomainToFederate -TenantId $TenantId).Authentication -like 'Federated') {
+                Set-MsolDomainAuthentication -DomainName $DomainToFederate -TenantId $TenantId -Authentication Managed
+                Confirm-MsolDomain -TenantId $TenantId -DomainName $DomainToFederate
+            }
+        }
+
         Set-MsolDomain -Name (Get-MsolDomain -TenantId $TenantId | Where-Object Name -like "*microsoft.com").Name -TenantId $TenantId -IsDefault
         # ADFS Federation Settings
         Set-MsolDomainAuthentication `
@@ -96,12 +107,6 @@ function Global:Add-FederatedDomain {
             -SigningCertificate $certData `
             -TenantId $TenantId
 
-        # Confirm Domain if necessary
-        If(Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId){
-            $TXTrecordToSet = (Get-MsolDomainVerificationDns -DomainName $DomainToFederate -TenantId $TenantId -Mode DnsTxtRecord).Text
-            Write-Output -Message "$DomainToFederate TXT Record of $TXTrecordToSet has not been verified, attempting verification now..."
-            Confirm-MsolDomain -TenantId $TenantId -DomainName $DomainToFederate -ErrorAction Continue
-        }
     }
     End
     {
