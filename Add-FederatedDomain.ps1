@@ -106,6 +106,17 @@ function Global:Add-FederatedDomain {
             -PassiveLogOnUri "https://$FederationServerFQDN/adfs/ls/" `
             -SigningCertificate $certData `
             -TenantId $TenantId
+        # Set-MsolDomainAuthentication is used to switch the Domain to Federated login, it will NOT update an existing Federated Domain
+        # Set-MsolDomainFederationSettings is used to update all settings
+        Set-MsolDomainFederationSettings  `
+            -ActiveLogOnUri "https://$FederationServerFQDN/adfs/services/trust/2005/usernamemixed"  `
+            -DomainName $DomainToFederate `
+            -IssuerUri "http://$DomainToFederate/adfs/services/trust/" `
+            -LogOffUri "https://$FederationServerFQDN/adfs/ls/" `
+            -MetadataExchangeUri "https://$FederationServerFQDN/adfs/services/trust/mex" `
+            -PassiveLogOnUri "https://$FederationServerFQDN/adfs/ls/" `
+            -SigningCertificate $certData `
+            -TenantId $TenantId
 
     }
     End
